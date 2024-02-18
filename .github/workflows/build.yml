@@ -1,0 +1,38 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build for x86_64
+      run: swift build -c release --arch x86_64 -Xswiftc -cross-module-optimization
+
+    - name: Build for arm64
+      run: swift build -c release --arch arm64 -Xswiftc -cross-module-optimization
+
+    - name: Archive artifacts for x86_64
+      run: |
+        mkdir -p release/x86_64
+        cp -r .build/x86_64-apple-macosx/release/pbcopyplus release/x86_64/
+      if: success()
+
+    - name: Archive artifacts for arm64
+      run: |
+        mkdir -p release/arm64
+        cp -r .build/arm64-apple-macosx/release/pbcopyplus release/arm64/
+      if: success()
+
+    - name: Upload Release Assets
+      uses: actions/upload-artifact@v2
+      with:
+        name: release
+        path: release
