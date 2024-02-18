@@ -1,18 +1,15 @@
-.DEFAULT_GOAL := all
+SWIFT = swiftc
+SWIFT_FLAGS = -O
+EXECUTABLE = pbcopyplus
+SOURCES_DIR = Sources/pbcopyplus
 
-SWIFTC := swiftc
-SWIFT_FLAGS := -sdk $(shell xcrun --show-sdk-path --sdk macosx) -framework Cocoa
-SOURCE := main.swift
-OUTPUT := pbcopyplus
+all: $(EXECUTABLE)
 
-.PHONY: all
-all: $(OUTPUT)
-
-$(OUTPUT): $(SOURCE)
+$(EXECUTABLE):
 	mkdir -p bin
-	$(SWIFTC) $(SWIFT_FLAGS) $^ -o bin/$@
+	$(SWIFT) $(SWIFT_FLAGS) $(SOURCES_DIR)/main.swift -o bin/$(EXECUTABLE)
 
-.PHONY: clean
 clean:
-	rm -f $(OUTPUT)
+	rm -f bin/$(EXECUTABLE)
 	rmdir bin
+
